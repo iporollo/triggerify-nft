@@ -14,3 +14,12 @@ a {
 * {
   box-sizing: border-box;
 }
+
+/* @font-face kit by Fonts2u (https://fonts2u.com) */
+
+@font-face {
+  font-family: "Trigger";
+  src: url("trigger.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
