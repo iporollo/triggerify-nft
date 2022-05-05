@@ -1,3 +1,4 @@
+import { useState, useEffect, useCallback } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import {
@@ -6,7 +7,7 @@ import {
   getDefaultWallets,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
-import { chain, createClient, WagmiProvider } from 'wagmi';
+import { chain, createClient, WagmiProvider, useAccount } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import AppHeader from '../components/AppHeader/AppHeader';
 import AppFooter from '../components/AppFooter/AppFooter';
@@ -29,6 +30,64 @@ const wagmiClient = createClient({
   provider,
 });
 
+const NFTDisplay: React.FC = () => {
+  const [accountLoading, setAccountLoading] = useState<boolean>(true);
+  const [accountData, setAccountData] = useState<any>(undefined);
+  const [accountError, setAccountError] = useState<boolean>(false);
+  const [nftList, setNftList] = useState<any[]>([]);
+  const [nftImageList, setNftImageList] = useState<string[]>([]);
+
+  const { data, isError, isLoading } = useAccount();
+
+  useEffect(() => {
+    setAccountLoading(isLoading);
+    setAccountError(isError);
+    setAccountData(data);
+  }, [data, isError, isLoading]);
+
+  useEffect(() => {
+    const fetchNFTs = async (ownerAddress: string) => {
+      const baseURL = 'https://eth-mainnet.alchemyapi.io/v2/demo/getNFTs/';
+      const fetchURL = `${baseURL}?owner=${ownerAddress}`;
+
+      try {
+        const response = await fetch(fetchURL);
+        if (response.ok) {
+          const responseJson = await response.json();
+          const ownedNfts: any[] = responseJson.ownedNfts;
+          const nftImages: string[] = [];
+          ownedNfts.forEach((nft) => {
+            if (nft.metadata.image_url) {
+              nftImages.push(nft.metadata.image_url);
+            } else if (nft.media.length > 0) {
+              nftImages.push(nft.media[0].gateway);
+            }
+          });
+          setNftList(ownedNfts);
+          setNftImageList(nftImages);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (data?.address) fetchNFTs(data.address);
+  }, [data]);
+
+  if (accountLoading) {
+    return <div>Loading...</div>;
+  } else if (accountError) {
+    return <div>Error</div>;
+  } else {
+    return (
+      <div>
+        {nftImageList.map((imgSrc, idx) => (
+          <img key={idx} src={imgSrc} alt={imgSrc} />
+        ))}
+      </div>
+    );
+  }
+};
+
 const Home: NextPage = () => {
   return (
     <div className={styles.container}>
@@ -41,13 +100,12 @@ const Home: NextPage = () => {
       <WagmiProvider client={wagmiClient}>
         <RainbowKitProvider chains={chains}>
           <main className={styles.main}>
-            <ConnectButton />
             <ul>
-              <li>pull nfts</li>
-              <li>list the nfts</li>
               <li>set trigger level on nft</li>
               <li>mint new nft</li>
             </ul>
+            <NFTDisplay />
+            <ConnectButton showBalance={false} />
           </main>
         </RainbowKitProvider>
       </WagmiProvider>
