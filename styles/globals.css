@@ -15,6 +15,23 @@ a {
   box-sizing: border-box;
 }
 
+input[type=range]{
+  -webkit-appearance: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  background: orangered;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
 /* @font-face kit by Fonts2u (https://fonts2u.com) */
 
 @font-face {
