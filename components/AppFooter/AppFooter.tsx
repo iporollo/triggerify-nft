@@ -4,7 +4,7 @@ import styles from '../../styles/Home.module.css';
 const AppFooter: React.FC = () => (
   <footer className={styles.footer}>
     <div>
-      Built with <TrollFace width={24} heigh={24} /> by
+      Built by
       <a
         href="https://twitter.com/iporollo"
         target="_blank"

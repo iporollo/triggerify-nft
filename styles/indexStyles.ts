@@ -54,4 +54,18 @@ const StyledHeaderLink = styled.a`
   text-decoration: none;
 `;
 
-export { HeaderStyled, HeaderInner, StyledHeaderText, StyledHeaderLink };
+const TriggerSpan = styled.span`
+  font-family: Trigger, sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  color: orangered;
+`;
+
+export {
+  HeaderStyled,
+  HeaderInner,
+  StyledHeaderText,
+  StyledHeaderLink,
+  TriggerSpan,
+  TriggeredAnimation,
+};
