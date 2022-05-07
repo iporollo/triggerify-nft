@@ -24,7 +24,7 @@ const StyledButtonContainer = styled.div`
 
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
-  [apiProvider.alchemy(process.env.ALCHEMY_ID), apiProvider.fallback()]
+  [apiProvider.alchemy(process.env.ALCHEMY_API_KEY), apiProvider.fallback()]
 );
 
 const { connectors } = getDefaultWallets({
