@@ -70,6 +70,8 @@ const NFTSelect = ({
     return <div>Error loading NFTs</div>;
   } else if (!accountData) {
     return null;
+  } else if (nftList.length === 0) {
+    return <div>No NFTs found, go mint one.</div>;
   } else {
     return (
       <NFTList>
