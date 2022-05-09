@@ -35,6 +35,11 @@ const TriggerContainer = ({
   accountData,
 }: TriggerContainerProps) => {
   const [triggerLevel, setTriggerLevel] = useState<number>(5);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
+  const handleSaveClick = () => {
+    setIsSaving(true);
+  };
 
   return (
     <>
@@ -45,7 +50,11 @@ const TriggerContainer = ({
       )}
       {selectedNft && (
         <>
-          <TriggerCanvas imgSrc={selectedNft} triggerLevel={triggerLevel} />
+          <TriggerCanvas
+            imgSrc={selectedNft}
+            triggerLevel={triggerLevel}
+            isSaving={isSaving}
+          />
           <TriggerRangeContainer>
             <RangeInputWrapper>
               <RangeInput
@@ -63,6 +72,10 @@ const TriggerContainer = ({
               <TriggerSpan>{triggerLevel}</TriggerSpan>
             </TriggerLevelDisplay>
           </TriggerRangeContainer>
+          <div>
+            <button onClick={() => {}}>Mint</button>
+            <button onClick={handleSaveClick}>Save gif</button>
+          </div>
         </>
       )}
     </>

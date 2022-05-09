@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@rainbow-me/rainbowkit": "^0.1.0",
+    "@types/gif.js": "^0.2.2",
     "@types/styled-components": "^5.1.25",
     "babel-plugin-styled-components": "^2.0.7",
     "ethers": "^5.6.5",
+    "gif.js": "^0.2.0",
     "next": "12.1.6",
     "react": "18.1.0",
     "react-dom": "18.1.0",
