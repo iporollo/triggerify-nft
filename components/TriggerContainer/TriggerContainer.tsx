@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAccount } from 'wagmi';
-import { TriggerSpan, TriggeredAnimation } from '../../styles/indexStyles';
+import { TriggerSpan } from '../../styles/indexStyles';
+import TriggerCanvas from '../TriggerCanvas/TriggerCanvas';
 
 const TriggerRangeContainer = styled.div`
   width: 100%;
@@ -36,20 +36,6 @@ const TriggerContainer = ({
 }: TriggerContainerProps) => {
   const [triggerLevel, setTriggerLevel] = useState<number>(5);
 
-  const calculateTriggerDuration = (): number => {
-    if (triggerLevel === 0) return 0;
-    return 5 / (triggerLevel * 1.0);
-  };
-
-  const TriggeredContainer = styled.div`
-    margin-bottom: 24px;
-    animation-name: ${TriggeredAnimation};
-    animation-duration: calc(${calculateTriggerDuration()}s);
-    transform-origin: 50% 50%;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-  `;
-
   return (
     <>
       {!selectedNft && !!accountData && (
@@ -59,9 +45,7 @@ const TriggerContainer = ({
       )}
       {selectedNft && (
         <>
-          <TriggeredContainer>
-            <img src={selectedNft} alt={selectedNft} width={256} />
-          </TriggeredContainer>
+          <TriggerCanvas imgSrc={selectedNft} triggerLevel={triggerLevel} />
           <TriggerRangeContainer>
             <RangeInputWrapper>
               <RangeInput

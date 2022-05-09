@@ -1,0 +1,4 @@
+const IMAGE_SIZE = 256;
+const CANVAS_SIZE = 350;
+
+export { IMAGE_SIZE, CANVAS_SIZE };
