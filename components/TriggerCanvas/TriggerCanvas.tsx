@@ -52,12 +52,15 @@ const TriggerCanvas = ({
     quality: 10,
     width: canvasSizeX,
     height: canvaSizeY,
+    background: 'rgba(0,0,0,0)',
   });
 
   gif.on('finished', function (blob) {
-    console.log('finished');
-    console.log(URL.createObjectURL(blob));
-    window.open(URL.createObjectURL(blob));
+    console.log('Finished rendering GIF');
+    const tempLink = document.createElement('a');
+    tempLink.href = URL.createObjectURL(blob);
+    tempLink.setAttribute('download', 'filename.gif');
+    tempLink.click();
   });
 
   gif.on('progress', function (percent: number) {
@@ -93,7 +96,7 @@ const TriggerCanvas = ({
       frameRenderer(ctx, canvasSize, image, imgRef.current);
     };
     if (isSaving && gifRef.current.frames < 300) {
-      gif.addFrame(ctx, { copy: true });
+      gif.addFrame(ctx, { copy: true, delay: 20 });
       gifRef.current.frames++;
     } else if (gifRef.current.frames === 300 && !gifRef.current.isRendering) {
       gif.render();
