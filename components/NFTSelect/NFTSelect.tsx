@@ -78,7 +78,6 @@ const NFTSelect = ({
           return (
             <NFTSelectButton key={idx} onClick={() => handleSelectNft(nft)}>
               <img src={nftImgSrc} alt={nft.metadata.name} width={256} />
-              {/* TODO: Change alt to name */}
             </NFTSelectButton>
           );
         })}
