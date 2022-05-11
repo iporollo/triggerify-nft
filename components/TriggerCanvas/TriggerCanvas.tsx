@@ -23,13 +23,17 @@ const frameRenderer = (
 interface TriggerCanvasProps {
   imgSrc: string;
   triggerLevel: number;
-  isSaving: boolean;
+  shouldRender: boolean;
+  gifProgressCallback: (progress: number) => void;
+  gifFinishedCallback: (blob: Blob) => void;
 }
 
 const TriggerCanvas = ({
   imgSrc,
   triggerLevel,
-  isSaving,
+  shouldRender,
+  gifProgressCallback,
+  gifFinishedCallback,
 }: TriggerCanvasProps) => {
   const canvasRef = useRef<any>(null);
   const requestIdRef = useRef<any>(null);
@@ -56,15 +60,11 @@ const TriggerCanvas = ({
   });
 
   gif.on('finished', function (blob) {
-    console.log('Finished rendering GIF');
-    const tempLink = document.createElement('a');
-    tempLink.href = URL.createObjectURL(blob);
-    tempLink.setAttribute('download', 'filename.gif');
-    tempLink.click();
+    gifFinishedCallback(blob);
   });
 
   gif.on('progress', function (percent: number) {
-    console.log('progress', percent);
+    gifProgressCallback(percent);
   });
 
   const calculateTriggerLevel = (): { x: number; y: number } => {
@@ -95,7 +95,7 @@ const TriggerCanvas = ({
       ctx.imageSmoothingEnabled = false;
       frameRenderer(ctx, canvasSize, image, imgRef.current);
     };
-    if (isSaving && gifRef.current.frames < 300) {
+    if (shouldRender && gifRef.current.frames < 300) {
       gif.addFrame(ctx, { copy: true, delay: 20 });
       gifRef.current.frames++;
     } else if (gifRef.current.frames === 300 && !gifRef.current.isRendering) {
@@ -113,10 +113,14 @@ const TriggerCanvas = ({
 
   useEffect(() => {
     requestIdRef.current = requestAnimationFrame(tick);
+    if (!shouldRender) {
+      gifRef.current.frames = 0;
+      gifRef.current.isRendering = false;
+    }
     return () => {
       cancelAnimationFrame(requestIdRef.current);
     };
-  }, [imgSrc, triggerLevel, isSaving]);
+  }, [imgSrc, triggerLevel, shouldRender]);
 
   return <canvas {...canvasSize} ref={canvasRef} />;
 };
