@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { NFTObject } from '../../utils/globalTypes';
 
 const NFTList = styled.div`
   display: flex;
@@ -21,7 +22,7 @@ const NFTSelectButton = styled.button`
 `;
 
 interface NFTSelectProps {
-  handleSelectNft: (nftImageSrc: string) => void;
+  handleSelectNft: (nft: NFTObject) => void;
   accountData: any;
   accountLoading: boolean;
   accountError: boolean;
@@ -34,7 +35,6 @@ const NFTSelect = ({
   accountError,
 }: NFTSelectProps) => {
   const [nftList, setNftList] = useState<any[]>([]);
-  const [nftImageList, setNftImageList] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchNFTs = async (ownerAddress: string) => {
@@ -46,16 +46,7 @@ const NFTSelect = ({
         if (response.ok) {
           const responseJson = await response.json();
           const ownedNfts: any[] = responseJson.ownedNfts;
-          const nftImages: string[] = [];
-          ownedNfts.forEach((nft) => {
-            if (nft.metadata.image_url) {
-              nftImages.push(nft.metadata.image_url);
-            } else if (nft.media.length > 0) {
-              nftImages.push(nft.media[0].gateway);
-            }
-          });
           setNftList(ownedNfts);
-          setNftImageList(nftImages);
         }
       } catch (error) {
         console.log(error);
@@ -75,11 +66,22 @@ const NFTSelect = ({
   } else {
     return (
       <NFTList>
-        {nftImageList.map((imgSrc, idx) => (
-          <NFTSelectButton key={idx} onClick={() => handleSelectNft(imgSrc)}>
-            <img src={imgSrc} alt={imgSrc} width={256} />
-          </NFTSelectButton>
-        ))}
+        {nftList.map((nft, idx) => {
+          let nftImgSrc = '';
+
+          if (nft.metadata.image_url) {
+            nftImgSrc = nft.metadata.image_url;
+          } else if (nft.media.length > 0) {
+            nftImgSrc = nft.media[0].gateway;
+          }
+
+          return (
+            <NFTSelectButton key={idx} onClick={() => handleSelectNft(nft)}>
+              <img src={nftImgSrc} alt={nft.metadata.name} width={256} />
+              {/* TODO: Change alt to name */}
+            </NFTSelectButton>
+          );
+        })}
       </NFTList>
     );
   }

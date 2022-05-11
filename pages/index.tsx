@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import styled from 'styled-components';
 import {
   apiProvider,
   configureChains,
@@ -13,8 +14,7 @@ import AppHeader from '../components/AppHeader/AppHeader';
 import AppFooter from '../components/AppFooter/AppFooter';
 import NFTSelect from '../components/NFTSelect/NFTSelect';
 import TriggerContainer from '../components/TriggerContainer/TriggerContainer';
-import styled from 'styled-components';
-import { TriggerSpan } from '../styles/indexStyles';
+import { NFTObject } from '../utils/globalTypes';
 import styles from '../styles/Home.module.css';
 import '@rainbow-me/rainbowkit/styles.css';
 
@@ -39,13 +39,13 @@ const wagmiClient = createClient({
 });
 
 const MainApp: React.FC = () => {
-  const [selectedNft, setSelectedNft] = useState<string>('');
+  const [selectedNft, setSelectedNft] = useState<NFTObject>(undefined);
   const [accountData, setAccountData] = useState<any>(undefined);
   const [accountLoading, setAccountLoading] = useState<boolean>(true);
   const [accountError, setAccountError] = useState<boolean>(false);
 
-  const handleSelectNft = (nftImageSrc: string) => {
-    setSelectedNft(nftImageSrc);
+  const handleSelectNft = (nft: NFTObject) => {
+    setSelectedNft(nft);
   };
 
   const { data, isError, isLoading } = useAccount();
