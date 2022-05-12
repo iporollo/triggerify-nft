@@ -63,6 +63,7 @@ const TriggerContainer = ({
   const [triggerLevel, setTriggerLevel] = useState<number>(5);
   const [renderingGif, setRenderingGif] = useState<boolean>(false);
   const [isMinting, setIsMinting] = useState<boolean>(false);
+  const [mintMessage, setMintMessage] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [gifProgress, setGifProgress] = useState<number>(0);
 
@@ -73,6 +74,7 @@ const TriggerContainer = ({
   const FILE_NAME = `${NFT_NAME}.gif`;
 
   const handleMintClick = () => {
+    setMintMessage('');
     setRenderingGif(true);
     setIsMinting(true);
   };
@@ -130,6 +132,11 @@ const TriggerContainer = ({
     );
 
     const result = await response.json();
+    if (result.response === 'NOK') {
+      setMintMessage(result.error.message);
+    } else {
+      setMintMessage(`Minted ${NFT_NAME}`);
+    }
     console.log(result);
   };
 
@@ -181,6 +188,11 @@ const TriggerContainer = ({
               <ProgressContainer>
                 <progress value={gifProgress * 100} max="100" />
               </ProgressContainer>
+            )}
+            {mintMessage && (
+              <div>
+                <p>{mintMessage}</p>
+              </div>
             )}
             <ButtonStyled disabled={renderingGif} onClick={handleMintClick}>
               Mint
