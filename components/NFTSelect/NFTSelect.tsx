@@ -69,15 +69,19 @@ const NFTSelect = ({
         {nftList.map((nft, idx) => {
           let nftImgSrc = '';
 
-          if (nft.metadata.image_url) {
+          if (nft.metadata && nft.metadata.image_url) {
             nftImgSrc = nft.metadata.image_url;
-          } else if (nft.media.length > 0) {
+          } else if (nft.media && nft.media.length > 0) {
             nftImgSrc = nft.media[0].gateway;
           }
 
           return (
             <NFTSelectButton key={idx} onClick={() => handleSelectNft(nft)}>
-              <img src={nftImgSrc} alt={nft.metadata.name} width={256} />
+              <img
+                src={nftImgSrc}
+                alt={nft.metadata ? nft.metadata.name : ''}
+                width={256}
+              />
             </NFTSelectButton>
           );
         })}

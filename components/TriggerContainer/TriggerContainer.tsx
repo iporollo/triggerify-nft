@@ -152,9 +152,9 @@ const TriggerContainer = ({
 
   const getNftImage = () => {
     let nftImgSrc = '';
-    if (selectedNft.metadata.image_url) {
+    if (selectedNft.metadata && selectedNft.metadata.image_url) {
       nftImgSrc = selectedNft.metadata.image_url;
-    } else if (selectedNft.media.length > 0) {
+    } else if (selectedNft.media && selectedNft.media.length > 0) {
       nftImgSrc = selectedNft.media[0].gateway;
     }
     return nftImgSrc;
