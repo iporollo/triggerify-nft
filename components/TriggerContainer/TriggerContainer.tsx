@@ -63,7 +63,9 @@ const TriggerContainer = ({
   const [triggerLevel, setTriggerLevel] = useState<number>(5);
   const [renderingGif, setRenderingGif] = useState<boolean>(false);
   const [isMinting, setIsMinting] = useState<boolean>(false);
-  const [mintMessage, setMintMessage] = useState<string>('');
+  const [mintMessage, setMintMessage] = useState<JSX.Element | undefined>(
+    undefined
+  );
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [gifProgress, setGifProgress] = useState<number>(0);
 
@@ -74,7 +76,7 @@ const TriggerContainer = ({
   const FILE_NAME = `${NFT_NAME}.gif`;
 
   const handleMintClick = () => {
-    setMintMessage('');
+    setMintMessage(undefined);
     setRenderingGif(true);
     setIsMinting(true);
   };
@@ -96,11 +98,11 @@ const TriggerContainer = ({
       tempLink.href = URL.createObjectURL(blob);
       tempLink.setAttribute('download', FILE_NAME);
       tempLink.click();
+      setIsSaving(false);
+      setIsMinting(false);
     } else if (isMinting) {
       mintNft(blob);
     }
-    setIsSaving(false);
-    setIsMinting(false);
   };
 
   const mintNft = async (blob: Blob) => {
@@ -133,11 +135,19 @@ const TriggerContainer = ({
 
     const result = await response.json();
     if (result.response === 'NOK') {
-      setMintMessage(result.error.message);
-    } else {
-      setMintMessage(`Minted ${NFT_NAME}`);
+      const message = <p>{result.error.message}</p>;
+      setMintMessage(message);
+    } else if (result.response === 'OK') {
+      const message = (
+        <p>
+          {`Minted ${NFT_NAME}. Click `}{' '}
+          <a href={result.transaction_external_url}>here to see transaction.</a>
+        </p>
+      );
+      setMintMessage(message);
     }
-    console.log(result);
+    setIsSaving(false);
+    setIsMinting(false);
   };
 
   const getNftImage = () => {
@@ -189,11 +199,23 @@ const TriggerContainer = ({
                 <progress value={gifProgress * 100} max="100" />
               </ProgressContainer>
             )}
+            {(isMinting || isSaving) && renderingGif && (
+              <div>
+                <p>Creating gif...</p>
+              </div>
+            )}
+            {isMinting && !renderingGif && (
+              <div>
+                <p>Minting NFT...</p>
+              </div>
+            )}
             {mintMessage && (
               <div>
                 <p>{mintMessage}</p>
               </div>
             )}
+          </div>
+          <div>
             <ButtonStyled disabled={renderingGif} onClick={handleMintClick}>
               Mint
             </ButtonStyled>
