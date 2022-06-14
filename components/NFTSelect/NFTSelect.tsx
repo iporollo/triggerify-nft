@@ -38,7 +38,7 @@ const NFTSelect = ({
 
   useEffect(() => {
     const fetchNFTs = async (ownerAddress: string) => {
-      const baseURL = 'https://eth-mainnet.alchemyapi.io/v2/demo/getNFTs/';
+      const baseURL = `https://eth-mainnet.g.alchemy.com/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/getNFTs`;
       const fetchURL = `${baseURL}?owner=${ownerAddress}`;
 
       try {
