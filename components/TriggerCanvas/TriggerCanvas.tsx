@@ -90,7 +90,6 @@ const TriggerCanvas = ({
     const ctx = canvasRef.current.getContext('2d');
     const image = new Image();
     image.src = imgSrc;
-    image.crossOrigin = 'anonymous';
     image.onload = () => {
       ctx.imageSmoothingEnabled = false;
       frameRenderer(ctx, canvasSize, image, imgRef.current);
