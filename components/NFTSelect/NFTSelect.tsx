@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNetwork } from 'wagmi';
 import styled from 'styled-components';
 import { NFTObject } from '../../utils/globalTypes';
 
@@ -35,11 +36,24 @@ const NFTSelect = ({
   accountError,
 }: NFTSelectProps) => {
   const [nftList, setNftList] = useState<any[]>([]);
+  const network = useNetwork();
 
   useEffect(() => {
     const fetchNFTs = async (ownerAddress: string) => {
-      const baseURL = `https://eth-mainnet.g.alchemy.com/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/getNFTs`;
-      const fetchURL = `${baseURL}?owner=${ownerAddress}`;
+      let BASE_URL;
+
+      switch (network.activeChain?.name) {
+        case 'Ethereum':
+          BASE_URL = `https://eth-mainnet.g.alchemy.com/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/getNFTs/`;
+          break;
+        case 'Polygon':
+          BASE_URL = `https://polygon-mainnet.g.alchemy.com/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/getNFTs/`;
+          break;
+        default:
+          BASE_URL = `https://eth-mainnet.g.alchemy.com/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/getNFTs/`;
+          break;
+      }
+      const fetchURL = `${BASE_URL}?owner=${ownerAddress}`;
 
       try {
         const response = await fetch(fetchURL);
@@ -53,7 +67,7 @@ const NFTSelect = ({
       }
     };
     if (accountData?.address) fetchNFTs(accountData.address);
-  }, [accountData]);
+  }, [accountData, network.activeChain?.name]);
 
   if (accountLoading) {
     return <div>Loading NFTs...</div>;

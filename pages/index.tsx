@@ -23,7 +23,7 @@ const StyledButtonContainer = styled.div`
 `;
 
 const { chains, provider } = configureChains(
-  [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
+  [chain.mainnet, chain.polygon],
   [
     apiProvider.alchemy(process.env.NEXT_PUBLIC_ALCHEMY_API_KEY),
     apiProvider.fallback(),
