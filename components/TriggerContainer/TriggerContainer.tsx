@@ -142,7 +142,15 @@ const TriggerContainer = ({
       const message = (
         <p>
           {`Minted ${NFT_NAME}. Click `}{' '}
-          <a href={result.transaction_external_url}>here to see transaction.</a>
+          <a
+            href={result.transaction_external_url}
+            style={{
+              textDecoration: 'underline',
+              color: 'orangered',
+            }}
+          >
+            here to see transaction.
+          </a>
         </p>
       );
       setMintMessage(message);
