@@ -71,7 +71,7 @@ const TriggerContainer = ({
   const [nftImageUrl, setNftImageUrl] = useState<string>('');
 
   const NFT_NAME = selectedNft
-    ? `Triggered ${selectedNft.metadata.name} (Level ${triggerLevel})`
+    ? `Triggered ${selectedNft.name} (Level ${triggerLevel})`
     : '';
 
   const FILE_NAME = `${NFT_NAME}.gif`;
@@ -151,15 +151,10 @@ const TriggerContainer = ({
     setIsMinting(false);
   };
 
-  const getNftImage = useCallback(() => {
-    let nftImgSrc = '';
-    if (selectedNft.metadata && selectedNft.metadata.image_url) {
-      nftImgSrc = selectedNft.metadata.image_url;
-    } else if (selectedNft.media && selectedNft.media.length > 0) {
-      nftImgSrc = selectedNft.media[0].gateway;
-    }
-    return nftImgSrc;
-  }, [selectedNft]);
+  const getNftImage = useCallback(
+    () => selectedNft.previews.image_large_url,
+    [selectedNft]
+  );
 
   useEffect(() => {
     const fetchNFTImage = async () => {

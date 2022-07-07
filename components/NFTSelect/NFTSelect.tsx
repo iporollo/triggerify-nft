@@ -44,22 +44,31 @@ const NFTSelect = ({
 
       switch (network.activeChain?.name) {
         case 'Ethereum':
-          BASE_URL = `https://eth-mainnet.g.alchemy.com/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/getNFTs/`;
+          BASE_URL = `https://api.simplehash.com/api/v0/nfts/owners?chains=ethereum`;
           break;
         case 'Polygon':
-          BASE_URL = `https://polygon-mainnet.g.alchemy.com/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/getNFTs/`;
+          BASE_URL = `https://api.simplehash.com/api/v0/nfts/owners?chains=polygon`;
           break;
         default:
-          BASE_URL = `https://eth-mainnet.g.alchemy.com/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/getNFTs/`;
+          BASE_URL = `https://api.simplehash.com/api/v0/nfts/owners?chains=ethereum`;
           break;
       }
-      const fetchURL = `${BASE_URL}?owner=${ownerAddress}`;
+      const fetchURL = `${BASE_URL}&wallet_addresses=${ownerAddress}`;
+      const options = {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'X-API-KEY': process.env.NEXT_PUBLIC_SIMPLEHASH_API_KEY || '',
+        },
+      };
 
       try {
-        const response = await fetch(fetchURL);
+        const response = await fetch(fetchURL, options);
         if (response.ok) {
           const responseJson = await response.json();
-          const ownedNfts: any[] = responseJson.ownedNfts;
+          const ownedNfts: any[] = responseJson.nfts.filter(
+            (nft: any) => nft.image_url != null
+          );
           setNftList(ownedNfts);
         }
       } catch (error) {
@@ -81,21 +90,10 @@ const NFTSelect = ({
     return (
       <NFTList>
         {nftList.map((nft, idx) => {
-          let nftImgSrc = '';
-
-          if (nft.metadata && nft.metadata.image_url) {
-            nftImgSrc = nft.metadata.image_url;
-          } else if (nft.media && nft.media.length > 0) {
-            nftImgSrc = nft.media[0].gateway;
-          }
-
+          let nftImgSrc = nft.image_url;
           return (
             <NFTSelectButton key={idx} onClick={() => handleSelectNft(nft)}>
-              <img
-                src={nftImgSrc}
-                alt={nft.metadata ? nft.metadata.name : ''}
-                width={256}
-              />
+              <img src={nftImgSrc} alt={nft.name} width={256} />
             </NFTSelectButton>
           );
         })}
