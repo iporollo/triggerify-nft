@@ -94,10 +94,10 @@ const TriggerCanvas = ({
       ctx.imageSmoothingEnabled = false;
       frameRenderer(ctx, canvasSize, image, imgRef.current);
     };
-    if (shouldRender && gifRef.current.frames < 100) {
+    if (shouldRender && gifRef.current.frames < 64) {
       gif.addFrame(ctx, { copy: true, delay: 20 });
       gifRef.current.frames++;
-    } else if (gifRef.current.frames === 100 && !gifRef.current.isRendering) {
+    } else if (gifRef.current.frames === 64 && !gifRef.current.isRendering) {
       gif.render();
       gifRef.current.isRendering = true;
     }
