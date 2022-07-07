@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import TriggerCanvas from '../TriggerCanvas/TriggerCanvas';
 import { NFTObject } from '../../utils/globalTypes';
@@ -68,6 +68,7 @@ const TriggerContainer = ({
   );
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [gifProgress, setGifProgress] = useState<number>(0);
+  const [nftImageUrl, setNftImageUrl] = useState<string>('');
 
   const NFT_NAME = selectedNft
     ? `Triggered ${selectedNft.metadata.name} (Level ${triggerLevel})`
@@ -150,7 +151,7 @@ const TriggerContainer = ({
     setIsMinting(false);
   };
 
-  const getNftImage = () => {
+  const getNftImage = useCallback(() => {
     let nftImgSrc = '';
     if (selectedNft.metadata && selectedNft.metadata.image_url) {
       nftImgSrc = selectedNft.metadata.image_url;
@@ -158,7 +159,18 @@ const TriggerContainer = ({
       nftImgSrc = selectedNft.media[0].gateway;
     }
     return nftImgSrc;
-  };
+  }, [selectedNft]);
+
+  useEffect(() => {
+    const fetchNFTImage = async () => {
+      const nftImgSrc = getNftImage();
+      const imageResponse = await fetch(nftImgSrc);
+      const imageBlob = await imageResponse.blob();
+      const imageUrl = URL.createObjectURL(imageBlob);
+      setNftImageUrl(imageUrl);
+    };
+    if (selectedNft) fetchNFTImage();
+  }, [selectedNft, getNftImage]);
 
   return (
     <>
@@ -170,7 +182,7 @@ const TriggerContainer = ({
       {selectedNft && (
         <>
           <TriggerCanvas
-            imgSrc={getNftImage()}
+            imgSrc={nftImageUrl}
             triggerLevel={triggerLevel}
             shouldRender={renderingGif}
             gifProgressCallback={gifProgressCallback}
